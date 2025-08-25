@@ -27,7 +27,7 @@ Neste jogo, o jogador deve sobreviver a noites aterrorizantes em diversos mapas 
 ### O projeto está atualmente em desenvolvimento. 
 Como é um projeto solo e de estudo, o progresso pode variar. Fique à vontade para explorar o código, mas tenha em mente que ele está em constante evolução.
 
-# 📸 Imagens do projeto
+# 📸 Imagens do Projeto
 <img width="1187" height="697" alt="Captura de tela 2025-08-24 221308" src="https://github.com/user-attachments/assets/1ef17527-cfea-44e1-b0ec-ba23191fc465" />
 <img width="1901" height="876" alt="Captura de tela 2025-08-24 221134" src="https://github.com/user-attachments/assets/8c728edd-b188-48df-b6e1-ed7830e75b1b" />
 <img width="1910" height="880" alt="Captura de tela 2025-08-24 221448" src="https://github.com/user-attachments/assets/106be278-f26e-4552-aeef-a55b44db277c" />
