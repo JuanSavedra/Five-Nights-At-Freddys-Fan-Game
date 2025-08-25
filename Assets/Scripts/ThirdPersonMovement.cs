@@ -81,9 +81,9 @@ public class ThirdPersonMovement : MonoBehaviour
         }
 
         if (_isRunning) {
-            moveSpeed = 6f;
+            moveSpeed = 9f;
         } else {
-            moveSpeed = 3f;
+            moveSpeed = 4f;
         }
     }
 
