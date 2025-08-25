@@ -1,16 +1,29 @@
 using System;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Rendering;
 
 public class ThirdPersonMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float moveSpeed;
+    private float moveSpeed;
+    public float walkSpeed;
+    public float sprintSpeed;
+
+    public float crouchSpeed;
+    public float crouchYScale;
+    public CapsuleCollider playerCollider;
+
     public float groundDrag;
+
     float _horizontalInput;
     float _verticalInput;
-    Vector3 _moveDirection;
     float _movement;
+    Vector3 _moveDirection;
+
+    [Header("Keybinds")]
+    public KeyCode crouchKey = KeyCode.LeftControl;
+    public KeyCode sprintKey = KeyCode.LeftShift;
 
     [Header("Ground Check")]
     public float playerHeight;
@@ -20,17 +33,26 @@ public class ThirdPersonMovement : MonoBehaviour
     [Header("Others")]
     public Transform orientation;
     public Animator animator;
-
-    bool _isWalking;
-    bool _isRunning;
-
+    
     Rigidbody _rigidbody;
+
+    public MovementState movementState;
+
+    public enum MovementState 
+    {
+        Walking,
+        Sprinting,
+        Falling,
+        Crouching
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
         _rigidbody.freezeRotation = true;
+
+        playerCollider.height = playerHeight;
     }
 
     // Update is called once per frame
@@ -39,10 +61,10 @@ public class ThirdPersonMovement : MonoBehaviour
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, whatIsGround);
 
         PlayerInput();
-        VerifyPlayerIsWalkingOrRunning();
         SetAnimations();
 
         SpeedControl();
+        StateHandler();
         VerifyGroundCollision();
     }
 
@@ -55,6 +77,35 @@ public class ThirdPersonMovement : MonoBehaviour
     {
         _horizontalInput = Input.GetAxisRaw("Horizontal");
         _verticalInput = Input.GetAxisRaw("Vertical");
+
+        if (Input.GetKeyDown(crouchKey)) {
+            playerCollider.height = 0.6f;
+            playerCollider.center = new Vector3(playerCollider.center.x, 0.3f, playerCollider.center.z);
+        }
+
+        if (Input.GetKeyUp(crouchKey)) {
+            playerCollider.height = playerHeight;
+            playerCollider.center = new Vector3(playerCollider.center.x, 0.5808896f, playerCollider.center.z);
+        }
+    }
+
+    void StateHandler()
+    {
+        if (Input.GetKeyDown(crouchKey)) {
+            movementState = MovementState.Crouching;
+            moveSpeed = crouchSpeed;
+        }
+
+        if (_movement != 0 && Input.GetKey(sprintKey) && grounded) {
+            movementState = MovementState.Sprinting;
+            moveSpeed = sprintSpeed;
+        } else if (_movement != 0 && grounded) {
+            movementState = MovementState.Walking;
+            moveSpeed = walkSpeed;
+        } else if (!grounded) {
+            movementState = MovementState.Falling;
+            moveSpeed = 0.5f;
+        }
     }
 
     void Movement()
@@ -66,8 +117,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
     void SetAnimations()
     {
-        animator.SetBool("isWalking", _isWalking);
-        animator.SetBool("isRunning", _isRunning);
+        
     }
 
 
@@ -79,12 +129,6 @@ public class ThirdPersonMovement : MonoBehaviour
             Vector3 limitedVelocity = flatVelocity.normalized * moveSpeed;
             _rigidbody.linearVelocity = new Vector3(limitedVelocity.x, _rigidbody.linearVelocity.y, limitedVelocity.z);
         }
-
-        if (_isRunning) {
-            moveSpeed = 9f;
-        } else {
-            moveSpeed = 4f;
-        }
     }
 
     void VerifyGroundCollision()
@@ -93,22 +137,6 @@ public class ThirdPersonMovement : MonoBehaviour
             _rigidbody.linearDamping = groundDrag; 
         } else { 
             _rigidbody.linearDamping = 0; 
-        }
-    }
-
-    void VerifyPlayerIsWalkingOrRunning()
-    {
-        if (_movement > 0 || _movement < 0) {
-            if (Input.GetKey(KeyCode.LeftShift)) { 
-                _isRunning = true;
-                _isWalking = false;
-            } else {
-                _isRunning = false;
-                _isWalking = true;
-            }
-        } else {
-            _isWalking = false;
-            _isRunning = false;
         }
     }
 }
