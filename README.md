@@ -21,7 +21,7 @@ Neste jogo, o jogador deve sobreviver a noites aterrorizantes em diversos mapas 
 - Lanterna: Fen1xTon
 - Personagem e Animatrônicos: Faertoon
 - Modelos dos Mapas: skylajade69
-(Conforme adiciono modelos, os nomes irão aparecer aqui)
+## (Conforme adiciono modelos, os nomes irão aparecer aqui)
 
 # 🚧 Status do Projeto
 ### O projeto está atualmente em desenvolvimento. 
